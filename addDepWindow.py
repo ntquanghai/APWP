@@ -18,7 +18,7 @@ def add():
 
 
 def addWindow():
-    root = Tk()
+    root = Toplevel()
     
     root.title("Excrucia Inc.")
     root.geometry("640x730")
@@ -75,7 +75,6 @@ def addWindow():
     canvas.create_window(500, 600, window = cancelB)
     
     root.mainloop()
-    
-#Delete codes below after connect all windows
-if __name__ == "__main__":
-    addWindow()
+
+#if __name__ == "__main__":
+#    addWindow()

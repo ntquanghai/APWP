@@ -19,7 +19,7 @@ def add():
 
 
 def addWindow():
-    root = Tk()
+    root = Toplevel()
     
     root.title("Excrucia Inc.")
     root.geometry("640x750")
@@ -77,6 +77,5 @@ def addWindow():
     
     root.mainloop()
     
-#Delete codes below after connect all windows
-if __name__ == "__main__":
-    addWindow()
+#if __name__ == "__main__":
+#    addWindow()

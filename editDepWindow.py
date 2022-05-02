@@ -5,41 +5,41 @@ def on_enter(button):
 def on_leave(button):
    button.config(background= "#87CEFF")
    
-def displayInfo(Tk, canvas):
-    text2 = Label(Tk, bg = "#87CEFA", fg = "#FFFFFF", text = "Name:", font = ("Arial Bold", 16))
+def displayInfo(Toplevel, canvas):
+    text2 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Name:", font = ("Arial Bold", 16))
     canvas.create_window(84, 100, window = text2)
-    text3 = Label(Tk, bg = "#87CEFA", fg = "#FFFFFF", text = "Employees number:", font = ("Arial Bold", 16))
+    text3 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Employees number:", font = ("Arial Bold", 16))
     canvas.create_window(153, 150, window = text3)
-    text4 = Label(Tk, bg = "#87CEFA", fg = "#FFFFFF", text = "Entry salary rate:", font = ("Arial Bold", 16))
+    text4 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Entry salary rate:", font = ("Arial Bold", 16))
     canvas.create_window(137, 200, window = text4)
-    text5 = Label(Tk, bg = "#87CEFA", fg = "#FFFFFF", text = "Junior salary rate:", font = ("Arial Bold", 16))
+    text5 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Junior salary rate:", font = ("Arial Bold", 16))
     canvas.create_window(143, 250, window = text5)
-    text6 = Label(Tk, bg = "#87CEFA", fg = "#FFFFFF", text = "Senior salary rate:", font = ("Arial Bold", 16))
+    text6 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Senior salary rate:", font = ("Arial Bold", 16))
     canvas.create_window(142, 300, window = text6)
-    text7 = Label(Tk, bg = "#87CEFA", fg = "#FFFFFF", text = "Leader salary rate:", font = ("Arial Bold", 16))
+    text7 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Leader salary rate:", font = ("Arial Bold", 16))
     canvas.create_window(145, 350, window = text7)
-    text8 = Label(Tk, bg = "#87CEFA", fg = "#FFFFFF", text = "Manager salary rate:", font = ("Arial Bold", 16))
+    text8 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Manager salary rate:", font = ("Arial Bold", 16))
     canvas.create_window(153, 400, window = text8)
 
-    entry2 = Entry(Tk, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+    entry2 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
     canvas.create_window(450, 100, window = entry2)
-    entry3 = Entry(Tk, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+    entry3 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
     canvas.create_window(450, 150, window = entry3)
-    entry4 = Entry(Tk, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+    entry4 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
     canvas.create_window(450, 200, window = entry4)
-    entry5 = Entry(Tk, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+    entry5 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
     canvas.create_window(450, 250, window = entry5)
-    entry6 = Entry(Tk, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+    entry6 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
     canvas.create_window(450, 300, window = entry6)
-    entry7 = Entry(Tk, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+    entry7 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
     canvas.create_window(450, 350, window = entry7)
-    entry8 = Entry(Tk, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+    entry8 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
     canvas.create_window(450, 400, window = entry8)
     
     #Need more codes to import data
     
 def editDepWindow():
-    root = Tk()
+    root = Toplevel()
     root.title("Excrucia Inc.")
     root.geometry("640x750")
     root.minsize(640, 750)
@@ -69,7 +69,7 @@ def editDepWindow():
     canvas.create_window(450, 600, window = restoreB)
     
     cancelB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Cancel", 
-                     width = 13)
+                     width = 13, command = root.destroy)
     cancelB.bind('<Enter>', lambda event: on_enter(cancelB))
     cancelB.bind('<Leave>', lambda event: on_leave(cancelB))
     canvas.create_window(325, 680, window = cancelB)
