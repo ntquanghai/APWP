@@ -1,0 +1,1 @@
+[{"name": "Harold Lang", "id": "ER-1", "dob": "2001-01-29", "email": "haroldlang.er-1@gmail.com", "pos": "leader", "salary": "$25/hr", "dep": "IT"}, {"name": "Harry Laroid", "id": "ER-2", "dob": "2022-05-03", "email": "harrylaroid.er-2@gmail.com", "pos": "Entry", "salary": "$10/hr", "dep": "IT"}]

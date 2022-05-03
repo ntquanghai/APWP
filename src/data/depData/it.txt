@@ -1,0 +1,1 @@
+{"id": 1, "name": "IT", "empNumber": 0, "salaryRate": {"entry": "$10/hr", "jr": "$15/hr", "sr": "$20/hr", "leader": "$25/hr", "manager": "$30/hr"}}

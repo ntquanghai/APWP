@@ -1,6 +1,9 @@
+from email import utils
 from tkinter import *
 import mainWindow
-
+import pickle
+import json
+from src.domains import utils
 
 def clear_u(entry):
     if entry.get() == "Username":
@@ -85,8 +88,21 @@ class loginWindow():
             self.entry2.config(show = "*")
         
     def login(self):
-        command = self.root.destroy()
-        mw = mainWindow.mainWindow()
+        with open("src/data/empData/accounts.txt", "rb+") as f:
+            data = pickle.loads(f.read())
+        accountIndex = utils.find(data,"email",self.entry1.get())
+        if((accountIndex==-1)or(not data[accountIndex]["password"] == self.entry2.get())):
+            self.canvas.create_text(320, 180, text = "Invalid credentials", font = ("Arial", 18), fill = "red")
+        else:           
+            with open("src\data\empData\empData.txt", "r+") as f:
+                userData = json.loads(f.read()) 
+                currentUserData = userData[utils.find(userData,"email",self.entry1.get())]
+                currentUserData["password"] = data[accountIndex]["password"]
+            with open("src\data\empData\currentUser.txt", "wb+") as f:
+                serData = pickle.dumps(currentUserData)
+                f.write(serData)
+            command = self.root.destroy()
+            mw = mainWindow.mainWindow()
     
 if __name__ == "__main__":
     loginWindow()

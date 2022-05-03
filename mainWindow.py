@@ -4,6 +4,7 @@ import addDepWindow
 import editEmpWindow
 import editDepWindow
 import loginWindow
+import pickle
 
 def on_enter(button):
    button.config(background="#B0E2FF")
@@ -24,6 +25,8 @@ def editDep():
 
 class mainWindow():
     def __init__(self):
+        with open("src\data\empData\currentUser.txt", "rb+") as f:
+            serData = pickle.loads(f.read())
         self.root = Tk()
         self.root.title("Excrucia Inc.")
         self.root.geometry("800x800")
@@ -36,8 +39,11 @@ class mainWindow():
         
         self.canvas.create_image(0, 0, image = self.bg, anchor = "nw")
         
-        self.text1 = Label(self.root, bg = "#87CEFA", fg = "#FFFFFF", text = "Welcome!", font = ("Arial Bold", 28))
-        self.canvas.create_window(400, 50, window = self.text1) 
+        # self.text1 = Label(self.root, bg = "#87CEFA", fg = "#FFFFFF", text = "Welcome!", font = ("Arial Bold", 28))
+        self.canvas.create_text(400, 50, text = "Welcome!", font = ("Arial Bold", 28), fill = "#358ed4") 
+        self.canvas.create_text(400, 85, text = serData["name"], font = ("Arial Bold", 24), fill = "white") 
+        self.canvas.create_text(400, 120, text = serData["pos"].capitalize() + " of " + serData["dep"], font = ("Arial", 16), fill = "black") 
+
         
         self.addEmpB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 18), 
                               text ="Add employee",  width = 20, command = addEmp)
@@ -72,8 +78,10 @@ class mainWindow():
         self.root.mainloop()
     
     def logOut(self):
+        with open("src\data\empData\currentUser.txt", "wb+") as f:
+            pass
         command = self.root.destroy()
         lw = loginWindow.loginWindow()
         
-#if __name__ == "__main__":
-#    mainWindow()
+if __name__ == "__main__":
+   mainWindow()

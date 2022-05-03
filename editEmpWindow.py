@@ -1,53 +1,78 @@
+from posixpath import split
 from tkinter import *
+
+from numpy import full
 import addUserWindow
+import json
+import src.domains.utils as utils
+from tkcalendar import DateEntry
+from tkinter.messagebox import askyesno
+
 
 def on_enter(button):
    button.config(background="#B0E2FF")
 def on_leave(button):
    button.config(background= "#87CEFF")
+
+def splitName(name):
+    splitList = name.split()
+    firstName = splitList[0]
+    lastName = ""
+    for i in range(1, len(splitList)):
+        lastName = lastName + splitList[i] + " "
+    fullName = {"firstName":firstName,"lastName":lastName}
+    return fullName
+
+def splitDob(dob):
+    day = ""
+    month = ""
+    year = ""
+    count = 0
+    for i in range(0, len(dob)):
+        if(dob[i] == "-"):
+            count = count + 1
+        else:
+            if(count == 0):
+                year = year + dob[i]
+            elif(count==1):
+                month = month + dob[i]
+            elif(count==2):
+                day = day + dob[i]
+    data = {
+        "day": int(day),
+        "month": int(month),
+        "year": int(year)
+    }
+    return data
+
+def searchById(canvas, root, searchedId):
+    with open("src\data\empData\empData.txt","r") as f:
+        data = json.loads(f.read())
+        print(data)
+    empIndex = utils.find(data,"id",searchedId)
+    if(empIndex == -1): 
+        pass
+    else:
+        searchedEmp = data[empIndex]
+        
+        entry2 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+        entry2.insert(0, splitName(searchedEmp["name"])["firstName"])
+        canvas.create_window(350, 100, window = entry2)
+        entry3 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+        entry3.insert(0, splitName(searchedEmp["name"])["lastName"])
+        day = splitDob(searchedEmp["dob"])["day"]
+        month = splitDob(searchedEmp["dob"])["month"]
+        year = splitDob(searchedEmp["dob"])["year"]
+        entry4 = DateEntry(root, selectmode="day", date_pattern="dd/mm/yyyy", day = day, month =month, year = year)
+        entry4.configure(background="#87CEFA", font = ("Arial", 16), width = 18, borderwidth= 1)
+        canvas.create_window(350, 150, window = entry3)
+        canvas.create_window(350, 200, window = entry4)
+        canvas.create_text(350, 250, text = searchedEmp["email"], font = ("Arial Bold", 16))
+        canvas.create_text(350, 300, text = searchedEmp["salary"], font = ("Arial Bold", 16))
+        canvas.create_text(350, 350, text = searchedEmp["dep"], font = ("Arial Bold", 16))
+        canvas.create_text(350, 400, text = searchedEmp["pos"].capitalize(), font = ("Arial Bold", 16))
    
-def displayInfo(Toplevel, canvas):
-    text2 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "First Name:", font = ("Arial Bold", 16))
-    canvas.create_window(84, 100, window = text2)
-    text3 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Last Name:", font = ("Arial Bold", 16))
-    canvas.create_window(84, 150, window = text3)
-    text4 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Date of birth:", font = ("Arial Bold", 16))
-    canvas.create_window(92, 200, window = text4)
-    text5 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Phone:", font = ("Arial Bold", 16))
-    canvas.create_window(63, 250, window = text5)
-    text6 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Email:", font = ("Arial Bold", 16))
-    canvas.create_window(58, 300, window = text6)
-    text7 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Salary:", font = ("Arial Bold", 16))
-    canvas.create_window(61, 350, window = text7)
-    text8 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Shift:", font = ("Arial Bold", 16))
-    canvas.create_window(53, 400, window = text8)
-    text9 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Years:", font = ("Arial Bold", 16))
-    canvas.create_window(59, 450, window = text9)
-    text10 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Department:", font = ("Arial Bold", 16))
-    canvas.create_window(89, 500, window = text10)
-    text11 = Label(Toplevel, bg = "#87CEFA", fg = "#FFFFFF", text = "Position:", font = ("Arial Bold", 16))
-    canvas.create_window(71, 550, window = text11)
-    
-    #Need more codes to import data
-    
-    entry2 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-    canvas.create_window(350, 100, window = entry2)
-    entry3 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-    canvas.create_window(350, 150, window = entry3)
-    entry4 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-    canvas.create_window(350, 200, window = entry4)
-    entry5 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-    canvas.create_window(350, 250, window = entry5)
-    entry6 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-    canvas.create_window(350, 300, window = entry6)
-    entry7 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-    canvas.create_window(350, 350, window = entry7)
-    entry8 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-    canvas.create_window(350, 400, window = entry8)
-    entry9 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-    canvas.create_window(350, 450, window = entry9)
-    entry10 = Entry(Toplevel, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-    canvas.create_window(350, 500, window = entry10)
+# def displayInfo(Toplevel, canvas):
     
 def editEmpWindow():
     root = Toplevel()
@@ -55,6 +80,7 @@ def editEmpWindow():
     root.geometry("640x750")
     root.minsize(640, 750)
     root.maxsize(640, 750)
+    
     
     bg = PhotoImage(file = "editbackground.png")
     
@@ -65,19 +91,41 @@ def editEmpWindow():
     
     entry0 = Entry(root, bg = "#87CEFA", fg ="#BFEFFF", font = ("Arial Bold", 18), width = 15)
     entry0.insert(0, "Enter ID")
-    canvas.create_window(150, 50, window = entry0)
+    canvas.create_window(125, 50, window = entry0)
+
+    canvas.create_text(84,100, text = "First Name:", font = ("Arial Bold", 16), fill = "black")
+    canvas.create_text(84,150, text = "Last Name:", font = ("Arial Bold", 16), fill = "black")
+    canvas.create_text(92,200, text = "Date of birth:", font = ("Arial Bold", 16), fill = "black")
+    canvas.create_text(58,250, text = "Email:", font = ("Arial Bold", 16), fill = "black")
+    canvas.create_text(61,300, text = "Salary:", font = ("Arial Bold", 16), fill = "black")
+    canvas.create_text(89,350, text = "Department:", font = ("Arial Bold", 16), fill = "black")
+    canvas.create_text(71,400, text = "Position:", font = ("Arial Bold", 16), fill = "black")
+        
+    entry2 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
+    canvas.create_window(350, 100, window = entry2)
+    entry3 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
+    canvas.create_window(350, 150, window = entry3)
+    entry4 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
+    canvas.create_window(350, 200, window = entry4)
+    entry5 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
+    canvas.create_window(350, 250, window = entry5)
+    entry6 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
+    canvas.create_window(350, 300, window = entry6)
+    entry7 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
+    canvas.create_window(350, 350, window = entry7)
+    
+    searchB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Search", 
+                   width = 13)
+    searchB.bind('<Enter>', lambda event: on_enter(searchB))
+    searchB.bind('<Button-1>', lambda event: searchById(canvas, root, entry0.get()))
+    searchB.bind('<Leave>', lambda event: on_leave(searchB))
+    canvas.create_window(200, 600, window = searchB)
     
     saveB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Save", 
-                   width = 13)
+                      width = 13)
     saveB.bind('<Enter>', lambda event: on_enter(saveB))
     saveB.bind('<Leave>', lambda event: on_leave(saveB))
-    canvas.create_window(200, 600, window = saveB)
-    
-    restoreB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Restore", 
-                      width = 13)
-    restoreB.bind('<Enter>', lambda event: on_enter(restoreB))
-    restoreB.bind('<Leave>', lambda event: on_leave(restoreB))
-    canvas.create_window(450, 600, window = restoreB)
+    canvas.create_window(450, 600, window = saveB)
     
     promoteB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Promote", 
                       width = 13)
@@ -96,10 +144,10 @@ def editEmpWindow():
     cancelB.bind('<Enter>', lambda event: on_enter(cancelB))
     cancelB.bind('<Leave>', lambda event: on_leave(cancelB))
     canvas.create_window(325, 700, window = cancelB)
-    
-    displayInfo(root, canvas)
-    
+        
     root.mainloop()
 
-#if __name__ == "__main__":
-#    editEmpWindow()
+if __name__ == "__main__":
+   editEmpWindow()
+
+

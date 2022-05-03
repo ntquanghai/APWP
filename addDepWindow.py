@@ -9,14 +9,6 @@ def add():
 
 
 
-
-
-
-
-
-
-
-
 def addWindow():
     root = Toplevel()
     
