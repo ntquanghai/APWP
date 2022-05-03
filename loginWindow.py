@@ -102,7 +102,6 @@ class loginWindow():
                 serData = pickle.dumps(currentUserData)
                 f.write(serData)
             command = self.root.destroy()
-            mw = mainWindow.mainWindow()
-    
+            mw = mainWindow.mainWindow()    
 if __name__ == "__main__":
     loginWindow()

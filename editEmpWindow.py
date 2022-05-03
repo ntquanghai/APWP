@@ -9,6 +9,15 @@ from tkcalendar import DateEntry
 from tkinter.messagebox import askyesno
 
 
+options = [
+    "Marketing",
+    "IT",
+    "Finance",
+    "HR",
+    "Operations",
+    "Executives"
+]
+
 def on_enter(button):
    button.config(background="#B0E2FF")
 def on_leave(button):
