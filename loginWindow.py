@@ -1,5 +1,8 @@
 from tkinter import *
 import mainWindow
+import depLeader
+import manager
+import executive
 
 
 def clear_u(entry):
@@ -86,7 +89,21 @@ class loginWindow():
         
     def login(self):
         command = self.root.destroy()
-        mw = mainWindow.mainWindow()
+        acc = self.entry1.get()
+        for dl in DepLeader:
+            if dl.email == acc:
+                self.account = dl
+                mw = mainWindow.mainWindow(dl.pos)
+            else:
+                for mng in Manager:
+                    if mng.email == acc:
+                        self.account = mng
+                        mw = mainWindow.mainWindow(mng.pos)
+                    else:
+                        for ex in Executive:
+                            if ex.email == acc:
+                                self.account = ex
+                                mw = mainWindow.mainWindow(ex.pos)
     
 if __name__ == "__main__":
     loginWindow()

@@ -4,27 +4,19 @@ import addDepWindow
 import editEmpWindow
 import editDepWindow
 import loginWindow
+import depLeader
+import manager
+import executive
 
 def on_enter(button):
    button.config(background="#B0E2FF")
 def on_leave(button):
    button.config(background= "#87CEFF")
-   
-def addEmp():
-    addEmpWindow.addWindow()
-    
-def editEmp():
-    editEmpWindow.editEmpWindow()
-    
-def addDep():
-    addDepWindow.addWindow()
-    
-def editDep():
-    editDepWindow.editDepWindow()
 
 class mainWindow():
-    def __init__(self):
-        self.root = Tk()
+    def __init__(self, pos):
+        self.pos = pos
+        self.root = Toplevel()
         self.root.title("Excrucia Inc.")
         self.root.geometry("800x800")
         self.root.minsize(800, 600)
@@ -40,13 +32,13 @@ class mainWindow():
         self.canvas.create_window(400, 50, window = self.text1) 
         
         self.addEmpB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 18), 
-                              text ="Add employee",  width = 20, command = addEmp)
+                              text ="Add employee",  width = 20, command = self.addEmp)
         self.addEmpB.bind('<Enter>', lambda event: on_enter(self.addEmpB))
         self.addEmpB.bind('<Leave>', lambda event: on_leave(self.addEmpB))
         self.canvas.create_window(200, 200, window = self.addEmpB)
         
         self.editEmpB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 18), 
-                               text ="View employee info",  width = 20, command = editEmp)
+                               text ="View employee info",  width = 20, command = self.editEmp)
         self.editEmpB.bind('<Enter>', lambda event: on_enter(self.editEmpB))
         self.editEmpB.bind('<Leave>', lambda event: on_leave(self.editEmpB))
         self.canvas.create_window(600, 200, window = self.editEmpB)
@@ -71,6 +63,24 @@ class mainWindow():
     
         self.root.mainloop()
     
+    def addEmp():
+        ae = addEmpWindow.addWindow()
+        
+    def editEmp():
+        editEmpWindow.editEmpWindow()
+        
+    def addDep():
+        if self.pos == "executive":
+            adw = addDepWindow.addWindow()
+        else:
+            messagebox.showerror("error", "Permission denied!")
+        
+    def editDep():
+        if self.pos == "executive":
+            editDepWindow.editDepWindow()
+        else:
+            messagebox.showerror("error", "Permission denied!")
+        
     def logOut(self):
         command = self.root.destroy()
         lw = loginWindow.loginWindow()
