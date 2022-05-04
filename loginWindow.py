@@ -102,9 +102,5 @@ class loginWindow():
             command = self.root.destroy()
             mw = mainWindow.mainWindow()  
         
-# if __name__ == "__main__":
-#     loginWindow()
-
-with open("src/data/empData/accounts.txt", "rb+") as f:
-    data = pickle.loads(f.read())
-    print(data)
+if __name__ == "__main__":
+    loginWindow()
