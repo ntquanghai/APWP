@@ -1,1 +1,1 @@
-{"name": "Accounting", "empNumber": 0, "salaryRate": {"entry": "$10/hr", "jr": "$11/hr", "sr": "$12/hr", "leader": "$13/hr", "manager": "$20/hr"}}
+{"name": "Accounting", "empNumber": 0, "salaryRate": {"entry": "$10/hr", "jr": "$11/hr", "sr": "$12/hr", "leader": "$12/hr", "manager": "$14/hr"}}

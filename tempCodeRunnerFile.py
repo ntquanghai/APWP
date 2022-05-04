@@ -103,17 +103,20 @@ class editDepWindow():
         def searchByName(root, searchedName):
             listofdep = depList("src\data\depData")
             flag = True
-            print(searchedName)
             for i in range(0,len(listofdep)):
                 print(listofdep)
                 if(searchedName.capitalize() in listofdep):
-                    self.entry2.insert(0,listofdep[i]["name"])
-                    self.entry3.insert(0,updateEmpNum(self.entry2.get().lower()))
-                    self.entry4.insert(0,listofdep[i]["salaryRate"]["entry"])
-                    self.entry5.insert(0,listofdep[i]["salaryRate"]["jr"])
-                    self.entry6.insert(0,listofdep[i]["salaryRate"]["sr"])
-                    self.entry7.insert(0,listofdep[i]["salaryRate"]["leader"])
-                    self.entry8.insert(0,listofdep[i]["salaryRate"]["manager"])
+                    with open("src\data\depData/"+self.entry0.get().lower()+".txt", "r+") as f:
+                        depData = json.loads(f.read())
+                    self.entry2.insert(0,depData["name"])
+                    print(depData["name"])
+                    self.entry3.insert(0,depData["empNumber"])
+                    self.entry4.insert(0,depData["salaryRate"]["entry"])
+                    self.entry5.insert(0,depData["salaryRate"]["jr"])
+                    self.entry6.insert(0,depData["salaryRate"]["sr"])
+                    self.entry7.insert(0,depData["salaryRate"]["leader"])
+                    self.entry8.insert(0,depData["salaryRate"]["manager"])
+                    break
                 else:
                     tkm.showerror(title="Error", message = "Invalid name")
                     break
@@ -122,34 +125,34 @@ class editDepWindow():
         def saveData(root):
             answer = tkm.askyesno(title="Adding Department", message = "Are you sure you want to add this department?")
             if answer:
-                if((not os.path.exists("src\data\depData/"+self.entry1.get().lower()+".txt")) or (os.path.getsize("src\data\depData/"+self.entry1.get().lower()+".txt")==0)):
-                    with open("src\data\depData/"+self.entry1.get().lower()+".txt", "w+") as f:
+                if((not os.path.exists("src\data\depData/"+self.entry0.get().lower()+".txt")) or (os.path.getsize("src\data\depData/"+self.entry0.get().lower()+".txt")==0)):
+                    with open("src\data\depData/"+self.entry0.get().lower()+".txt", "w+") as f:
                         tempDict = {
-                            "name": self.entry2.get().capitalize(),
-                            "empNumber": updateEmpNum(self.entry2.get().lower()),
+                            "name": str(self.entry0.get().capitalize()).replace("[","").replace("]",""),
+                            "empNumber": 0,
                             "salaryRate": {
-                                "entry": "$"+self.entry4.get()+"/hr",
-                                "jr": "$"+self.entry5.get()+"/hr",
-                                "sr": "$"+self.entry6.get()+"/hr",
-                                "leader": "$"+self.entry7.get()+"/hr",
-                                "manager": "$"+self.entry8.get()+"/hr"
+                                "entry": ""+self.entry4.get()+"",
+                                "jr": ""+self.entry5.get()+"",
+                                "sr": ""+self.entry6.get()+"",
+                                "leader": ""+self.entry7.get()+"",
+                                "manager": ""+self.entry8.get()+""
                             }
                         }
                         f.write(json.dumps(tempDict))
                         tkm.showinfo(title = "Successful", message = "Department added!")
                 else:
-                    with open("src\data\depData/"+self.entry1.get().lower()+".txt", "r+") as f:
+                    with open("src\data\depData/"+self.entry0.get().lower()+".txt", "r+") as f:
                         depData = json.loads(f.read())
-                    with open("src\data\depData/"+self.entry1.get().lower()+".txt", "w+") as f:
-                        depData["name"] = self.entry2.get().capitalize(),
-                        depData["empNumber"] = updateEmpNum(self.entry2.get().lower()),
+                        depData["name"] = str(self.entry0.get().capitalize()).replace("[","").replace("]","")
+                        print(self.entry2.get().capitalize())
                         depData["salaryRate"] = {
-                            "entry": "$"+self.entry3.get()+"/hr",
-                            "jr": "$"+self.entry4.get()+"/hr",
-                            "sr": "$"+self.entry5.get()+"/hr",
-                            "leader": "$"+self.entry6.get()+"/hr",
-                            "manager": "$"+self.entry7.get()+"/hr"
+                            "entry": ""+self.entry4.get()+"",
+                            "jr": ""+self.entry5.get()+"",
+                            "sr": ""+self.entry6.get()+"",
+                            "leader": ""+self.entry7.get()+"",
+                            "manager": ""+self.entry8.get()+""
                         }
+                    with open("src\data\depData/"+self.entry0.get().lower()+".txt", "w+") as f:
                         f.write(json.dumps(depData))
                         tkm.showinfo(title = "Successful", message = "Department added!")
             root.destroy() 
@@ -157,14 +160,14 @@ class editDepWindow():
         self.saveB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Search", 
                        width = 13)
         self.saveB.bind('<Enter>', lambda event: on_enter(self.saveB))
-        self.saveB.bind('<Button-1>', lambda event: searchByName(self.root,self.entry2.get()))
+        self.saveB.bind('<Button-1>', lambda event: searchByName(self.root,self.entry0.get()))
         self.saveB.bind('<Leave>', lambda event: on_leave(self.saveB))
         self.canvas.create_window(200, 600, window = self.saveB)
         
         self.restoreB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Save", 
                           width = 13)
         self.restoreB.bind('<Enter>', lambda event: on_enter(self.restoreB))
-        self.restoreB.bind('<Button-1>', lambda event: saveData(self.root,self.entry2.get()))
+        self.restoreB.bind('<Button-1>', lambda event: saveData(self.root))
         self.restoreB.bind('<Leave>', lambda event: on_leave(self.restoreB))
         self.canvas.create_window(450, 600, window = self.restoreB)
         
