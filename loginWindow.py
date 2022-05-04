@@ -37,8 +37,6 @@ def on_enter(button):
 def on_leave(button):
    button.config(background= "#87CEFF")
    
-def login():
-    mainWindow.mainWindow()
 
 class loginWindow():
     def __init__(self):
@@ -102,6 +100,11 @@ class loginWindow():
                 serData = pickle.dumps(currentUserData)
                 f.write(serData)
             command = self.root.destroy()
-            mw = mainWindow.mainWindow()    
-if __name__ == "__main__":
-    loginWindow()
+            mw = mainWindow.mainWindow()  
+        
+# if __name__ == "__main__":
+#     loginWindow()
+
+with open("src/data/empData/accounts.txt", "rb+") as f:
+    data = pickle.loads(f.read())
+    print(data)

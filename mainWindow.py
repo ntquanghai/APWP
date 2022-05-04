@@ -5,6 +5,7 @@ import editEmpWindow
 import editDepWindow
 import loginWindow
 import pickle
+import tkinter.messagebox as tkm
 
 def on_enter(button):
    button.config(background="#B0E2FF")
@@ -34,26 +35,30 @@ class mainWindow():
 
         
         self.addEmpB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 18), 
-                              text ="Add employee",  width = 20, command = self.addEmp)
+                              text ="Add employee",  width = 20)
         self.addEmpB.bind('<Enter>', lambda event: on_enter(self.addEmpB))
+        self.addEmpB.bind('<Button-1>', lambda event: self.addEmp())
         self.addEmpB.bind('<Leave>', lambda event: on_leave(self.addEmpB))
         self.canvas.create_window(200, 200, window = self.addEmpB)
         
         self.editEmpB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 18), 
-                               text ="View employee info",  width = 20, command = self.editEmp)
+                               text ="View employee info",  width = 20)
         self.editEmpB.bind('<Enter>', lambda event: on_enter(self.editEmpB))
+        self.editEmpB.bind('<Button-1>', lambda event: self.editEmp())
         self.editEmpB.bind('<Leave>', lambda event: on_leave(self.editEmpB))
         self.canvas.create_window(600, 200, window = self.editEmpB)
         
         self.addDepB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 18), 
                               text ="Add department", width = 20)
         self.addDepB.bind('<Enter>', lambda event: on_enter(self.addDepB))
+        self.addDepB.bind('<Button-1>', lambda event: self.addDep())
         self.addDepB.bind('<Leave>', lambda event: on_leave(self.addDepB))
         self.canvas.create_window(200, 300, window = self.addDepB)
         
         self.editDepB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 18), 
                                text ="View department info", width = 20)
         self.editDepB.bind('<Enter>', lambda event: on_enter(self.editDepB))
+        self.editDepB.bind('<Button-1>', lambda event: self.editDep())
         self.editDepB.bind('<Leave>', lambda event: on_leave(self.editDepB))
         self.canvas.create_window(600, 300, window = self.editDepB)
         
@@ -65,23 +70,27 @@ class mainWindow():
     
         self.root.mainloop()
     
-    def addEmp():
-        ae = addEmpWindow.addWindow()
+    def addEmp(self):
+        addEmpWindow.addWindow()
         
-    def editEmp():
+    def editEmp(self):
         editEmpWindow.editEmpWindow()
         
-    # def addDep():
-    #     if self.pos == "executive":
-    #         adw = addDepWindow.addWindow()
-    #     else:
-    #         messagebox.showerror("error", "Permission denied!")
+    def addDep(self):
+        with open("src\data\empData\currentUser.txt", "rb+") as f:
+            serData = pickle.loads(f.read())
+        if serData["pos"] == "executive":
+            adw = addDepWindow.addWindow()
+        else:
+            tkm.showerror("Access denied", "You do not have permission!")
         
-    # def editDep():
-    #     if self.pos == "executive":
-    #         editDepWindow.editDepWindow()
-    #     else:
-    #         messagebox.showerror("error", "Permission denied!")
+    def editDep(self):
+        with open("src\data\empData\currentUser.txt", "rb+") as f:
+            serData = pickle.loads(f.read())
+        if serData["pos"] == "executive":
+            editDepWindow.editDepWindow()
+        else:
+            tkm.showerror("Access denied", "You do not have permission!")
         
     def logOut(self):
         with open("src\data\empData\currentUser.txt", "wb+") as f:

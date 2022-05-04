@@ -1,1 +1,1 @@
-{"id": 5, "name": "Executives", "empNumber": 0, "salaryRate": $100/hr}
+{"name": "Executives", "empNumber": 1, "salaryRate": "$100/hr"}

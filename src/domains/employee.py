@@ -129,6 +129,10 @@ class Employee:
         return returnedValue
 
     def getSalary(dep, pos):
+        if(dep.lower() == "executives"):
+            with open("src/data/depData/"+dep.lower()+".txt", "r") as f:
+                data = json.loads(f.read())
+                return data["salaryRate"]
         with open("src/data/depData/"+dep.lower()+".txt", "r") as f:
             data = json.loads(f.read())
             return data["salaryRate"][pos.lower()]

@@ -1,12 +1,8 @@
-from posixpath import split
 from tkinter import *
-
-from numpy import full
-import addUserWindow
+import os
 import json
-import src.domains.utils as utils
-from tkcalendar import DateEntry
-from tkinter.messagebox import askyesno
+import pickle
+import tkinter.messagebox as tkm
 
 
 def on_enter(button):
@@ -14,140 +10,171 @@ def on_enter(button):
 def on_leave(button):
    button.config(background= "#87CEFF")
 
-def splitName(name):
-    splitList = name.split()
-    firstName = splitList[0]
-    lastName = ""
-    for i in range(1, len(splitList)):
-        lastName = lastName + splitList[i] + " "
-    fullName = {"firstName":firstName,"lastName":lastName}
-    return fullName
+def getPos(input):
+    if(input.lower() == "junior"):
+        return "jr"
+    elif(input.lower() == "sernior"):
+        return "sr"
 
-def splitDob(dob):
-    day = ""
-    month = ""
-    year = ""
-    count = 0
-    for i in range(0, len(dob)):
-        if(dob[i] == "-"):
-            count = count + 1
-        else:
-            if(count == 0):
-                year = year + dob[i]
-            elif(count==1):
-                month = month + dob[i]
-            elif(count==2):
-                day = day + dob[i]
-    data = {
-        "day": int(day),
-        "month": int(month),
-        "year": int(year)
-    }
-    return data
+def depList(directory):
+   depArr = []
+   for filename in os.listdir(directory):
+      f = os.path.join(directory, filename)
+      if os.path.isfile(f):
+        with open(f, 'r+') as r:
+            data = json.loads(r.read())
+        depArr.append(data["name"])
+   return depArr
 
-def searchById(canvas, root, searchedId):
-    with open("src\data\empData\empData.txt","r") as f:
-        data = json.loads(f.read())
-        print(data)
-    empIndex = utils.find(data,"id",searchedId)
-    if(empIndex == -1): 
-        pass
+def getDep(input):
+    abrv = ""
+    strInput = str(input)
+    if(not " " in strInput):
+        return strInput.lower()
     else:
-        searchedEmp = data[empIndex]
-        
-        entry2 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-        entry2.insert(0, splitName(searchedEmp["name"])["firstName"])
-        canvas.create_window(350, 100, window = entry2)
-        entry3 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
-        entry3.insert(0, splitName(searchedEmp["name"])["lastName"])
-        day = splitDob(searchedEmp["dob"])["day"]
-        month = splitDob(searchedEmp["dob"])["month"]
-        year = splitDob(searchedEmp["dob"])["year"]
-        entry4 = DateEntry(root, selectmode="day", date_pattern="dd/mm/yyyy", day = day, month =month, year = year)
-        entry4.configure(background="#87CEFA", font = ("Arial", 16), width = 18, borderwidth= 1)
-        canvas.create_window(350, 150, window = entry3)
-        canvas.create_window(350, 200, window = entry4)
-        canvas.create_text(350, 250, text = searchedEmp["email"], font = ("Arial Bold", 16))
-        canvas.create_text(350, 300, text = searchedEmp["salary"], font = ("Arial Bold", 16))
-        canvas.create_text(350, 350, text = searchedEmp["dep"], font = ("Arial Bold", 16))
-        canvas.create_text(350, 400, text = searchedEmp["pos"].capitalize(), font = ("Arial Bold", 16))
-   
-# def displayInfo(Toplevel, canvas):
-    
-def editEmpWindow():
-    root = Toplevel()
-    root.title("Excrucia Inc.")
-    root.geometry("640x750")
-    root.minsize(640, 750)
-    root.maxsize(640, 750)
-    
-    
-    bg = PhotoImage(file = "editbackground.png")
-    
-    canvas = Canvas(root, width = 640, height = 750)
-    canvas.pack(fill = "both", expand = True)
-    
-    canvas.create_image(0, 0, image = bg, anchor = "nw")
-    
-    entry0 = Entry(root, bg = "#87CEFA", fg ="#BFEFFF", font = ("Arial Bold", 18), width = 15)
-    entry0.insert(0, "Enter ID")
-    canvas.create_window(125, 50, window = entry0)
+        for i in range(0, len(strInput)):
+            if(i==0):
+                abrv = abrv + strInput[i]
+            if(strInput[i]==" "):
+                abrv = abrv + strInput[i+1]
+        return(abrv.lower())
 
-    canvas.create_text(84,100, text = "First Name:", font = ("Arial Bold", 16), fill = "black")
-    canvas.create_text(84,150, text = "Last Name:", font = ("Arial Bold", 16), fill = "black")
-    canvas.create_text(92,200, text = "Date of birth:", font = ("Arial Bold", 16), fill = "black")
-    canvas.create_text(58,250, text = "Email:", font = ("Arial Bold", 16), fill = "black")
-    canvas.create_text(61,300, text = "Salary:", font = ("Arial Bold", 16), fill = "black")
-    canvas.create_text(89,350, text = "Department:", font = ("Arial Bold", 16), fill = "black")
-    canvas.create_text(71,400, text = "Position:", font = ("Arial Bold", 16), fill = "black")
+def updateEmpNum(dep):
+    with open("src\data\empData\empData.txt", "r+") as f:
+        data = json.loads(f.read())
+    empNum = 0
+    for i in range(0, len(data)):
+        if(data[i]["dep"].lower() == dep):
+            empNum = empNum + 1
+    with open("src\data\depData/"+dep.lower()+".txt", "r+") as f:
+        depData = json.loads(f.read())
+        depData["empNumber"]= empNum
+    with open("src\data\depData/"+dep.lower()+".txt", "w+") as f:
+        f.write(json.dumps(depData))
+
+
+class editDepWindow():
+    def __init__(self):
+        self.root = Toplevel()
+        self.root.title("Excrucia Inc.")
+        self.root.geometry("640x750")
+        self.root.minsize(640, 750)
+        self.root.maxsize(640, 750)
         
-    entry2 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
-    canvas.create_window(350, 100, window = entry2)
-    entry3 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
-    canvas.create_window(350, 150, window = entry3)
-    entry4 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
-    canvas.create_window(350, 200, window = entry4)
-    entry5 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
-    canvas.create_window(350, 250, window = entry5)
-    entry6 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
-    canvas.create_window(350, 300, window = entry6)
-    entry7 = Entry(root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 0)
-    canvas.create_window(350, 350, window = entry7)
-    
-    searchB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Search", 
-                   width = 13)
-    searchB.bind('<Enter>', lambda event: on_enter(searchB))
-    searchB.bind('<Button-1>', lambda event: searchById(canvas, root, entry0.get()))
-    searchB.bind('<Leave>', lambda event: on_leave(searchB))
-    canvas.create_window(200, 600, window = searchB)
-    
-    saveB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Save", 
-                      width = 13)
-    saveB.bind('<Enter>', lambda event: on_enter(saveB))
-    saveB.bind('<Leave>', lambda event: on_leave(saveB))
-    canvas.create_window(450, 600, window = saveB)
-    
-    promoteB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Promote", 
-                      width = 13)
-    promoteB.bind('<Enter>', lambda event: on_enter(promoteB))
-    promoteB.bind('<Leave>', lambda event: on_leave(promoteB))
-    canvas.create_window(200, 650, window = promoteB)
-    
-    demoteB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Demote", 
-                     width = 13)
-    demoteB.bind('<Enter>', lambda event: on_enter(demoteB))
-    demoteB.bind('<Leave>', lambda event: on_leave(demoteB))
-    canvas.create_window(450, 650, window = demoteB)
-    
-    cancelB = Button(root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Cancel", 
-                     width = 13, command = root.destroy)
-    cancelB.bind('<Enter>', lambda event: on_enter(cancelB))
-    cancelB.bind('<Leave>', lambda event: on_leave(cancelB))
-    canvas.create_window(325, 700, window = cancelB)
+        self.bg = PhotoImage(file = "editbackground.png")
         
-    root.mainloop()
+        self.canvas = Canvas(self.root, width = 640, height = 750)
+        self.canvas.pack(fill = "both", expand = True)
+        
+        self.canvas.create_image(0, 0, image = self.bg, anchor = "nw")
+        
+        self.entry0 = Entry(self.root, bg = "#87CEFA", fg ="#BFEFFF", font = ("Arial Bold", 18), width = 15)
+        self.entry0.insert(0, "Enter department name")
+        self.canvas.create_window(150, 50, window = self.entry0)
+        
+        self.displayInfo()
+        
+        self.root.mainloop()
+    
+    def displayInfo(self):
+        self.canvas.create_text(84,100, text = "Name:", font = ("Arial Bold", 16), fill = "black")
+        self.canvas.create_text(153,150, text = "Employees number:", font = ("Arial Bold", 16), fill = "black")
+        self.canvas.create_text(137,200, text = "Entry salary rate:", font = ("Arial Bold", 16), fill = "black")
+        self.canvas.create_text(143,250, text = "Junior salary rate:", font = ("Arial Bold", 16), fill = "black")
+        self.canvas.create_text(142,300, text = "Senior salary rate:", font = ("Arial Bold", 16), fill = "black")
+        self.canvas.create_text(145,350, text = "Leader salary rate:", font = ("Arial Bold", 16), fill = "black")
+        self.canvas.create_text(153,400, text = "Manager salary rate:", font = ("Arial Bold", 16), fill = "black")
+
+        self.entry2 = Entry(self.root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+        self.canvas.create_window(450, 100, window = self.entry2)
+        self.entry3 = Entry(self.root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+        self.canvas.create_window(450, 150, window = self.entry3)
+        self.entry4 = Entry(self.root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+        self.canvas.create_window(450, 200, window = self.entry4)
+        self.entry5 = Entry(self.root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+        self.canvas.create_window(450, 250, window = self.entry5)
+        self.entry6 = Entry(self.root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+        self.canvas.create_window(450, 300, window = self.entry6)
+        self.entry7 = Entry(self.root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+        self.canvas.create_window(450, 350, window = self.entry7)
+        self.entry8 = Entry(self.root, bg = "#87CEFA", fg ="#000000", font = ("Arial Bold", 16), width = 20)
+        self.canvas.create_window(450, 400, window = self.entry8)
+
+        def searchByName(root, searchedName):
+            listofdep = depList("src\data\depData")
+            flag = True
+            print(searchedName)
+            for i in range(0,len(listofdep)):
+                print(listofdep)
+                if(searchedName.capitalize() in listofdep):
+                    self.entry2.insert(0,listofdep[i]["name"])
+                    self.entry3.insert(0,updateEmpNum(self.entry2.get().lower()))
+                    self.entry4.insert(0,listofdep[i]["salaryRate"]["entry"])
+                    self.entry5.insert(0,listofdep[i]["salaryRate"]["jr"])
+                    self.entry6.insert(0,listofdep[i]["salaryRate"]["sr"])
+                    self.entry7.insert(0,listofdep[i]["salaryRate"]["leader"])
+                    self.entry8.insert(0,listofdep[i]["salaryRate"]["manager"])
+                else:
+                    tkm.showerror(title="Error", message = "Invalid name")
+                    break
+                
+
+        def saveData(root):
+            answer = tkm.askyesno(title="Adding Department", message = "Are you sure you want to add this department?")
+            if answer:
+                if((not os.path.exists("src\data\depData/"+self.entry1.get().lower()+".txt")) or (os.path.getsize("src\data\depData/"+self.entry1.get().lower()+".txt")==0)):
+                    with open("src\data\depData/"+self.entry1.get().lower()+".txt", "w+") as f:
+                        tempDict = {
+                            "name": self.entry2.get().capitalize(),
+                            "empNumber": updateEmpNum(self.entry2.get().lower()),
+                            "salaryRate": {
+                                "entry": "$"+self.entry4.get()+"/hr",
+                                "jr": "$"+self.entry5.get()+"/hr",
+                                "sr": "$"+self.entry6.get()+"/hr",
+                                "leader": "$"+self.entry7.get()+"/hr",
+                                "manager": "$"+self.entry8.get()+"/hr"
+                            }
+                        }
+                        f.write(json.dumps(tempDict))
+                        tkm.showinfo(title = "Successful", message = "Department added!")
+                else:
+                    with open("src\data\depData/"+self.entry1.get().lower()+".txt", "r+") as f:
+                        depData = json.loads(f.read())
+                    with open("src\data\depData/"+self.entry1.get().lower()+".txt", "w+") as f:
+                        depData["name"] = self.entry2.get().capitalize(),
+                        depData["empNumber"] = updateEmpNum(self.entry2.get().lower()),
+                        depData["salaryRate"] = {
+                            "entry": "$"+self.entry3.get()+"/hr",
+                            "jr": "$"+self.entry4.get()+"/hr",
+                            "sr": "$"+self.entry5.get()+"/hr",
+                            "leader": "$"+self.entry6.get()+"/hr",
+                            "manager": "$"+self.entry7.get()+"/hr"
+                        }
+                        f.write(json.dumps(depData))
+                        tkm.showinfo(title = "Successful", message = "Department added!")
+            root.destroy() 
+        
+        self.saveB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Search", 
+                       width = 13)
+        self.saveB.bind('<Enter>', lambda event: on_enter(self.saveB))
+        self.saveB.bind('<Button-1>', lambda event: searchByName(self.root,self.entry2.get()))
+        self.saveB.bind('<Leave>', lambda event: on_leave(self.saveB))
+        self.canvas.create_window(200, 600, window = self.saveB)
+        
+        self.restoreB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Save", 
+                          width = 13)
+        self.restoreB.bind('<Enter>', lambda event: on_enter(self.restoreB))
+        self.restoreB.bind('<Button-1>', lambda event: saveData(self.root,self.entry2.get()))
+        self.restoreB.bind('<Leave>', lambda event: on_leave(self.restoreB))
+        self.canvas.create_window(450, 600, window = self.restoreB)
+        
+        self.cancelB = Button(self.root, bd = 1, bg = "#87CEFF", fg = "#FFFFFF", activebackground = "#B0E2FF", activeforeground = "#FFFFFF", font = ("Arial Bold", 16), text ="Cancel", 
+                         width = 13, command = self.root.destroy)
+        self.cancelB.bind('<Enter>', lambda event: on_enter(self.cancelB))
+        self.cancelB.bind('<Leave>', lambda event: on_leave(self.cancelB))
+        self.canvas.create_window(325, 680, window = self.cancelB)
+
 
 if __name__ == "__main__":
-   editEmpWindow()
-
+   editDepWindow()
 
